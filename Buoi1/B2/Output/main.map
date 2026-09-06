@@ -1,0 +1,125 @@
+
+Discarded input sections
+
+ .comment       0x0000000000000000       0x34 Output/main.o
+ .comment       0x0000000000000000       0x34 Output/startup.o
+ .comment       0x0000000000000000       0x34 Output/GPIO.o
+ .comment       0x0000000000000000       0x34 Output/RCC.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x0000000008000000 0x0000000000010000 xr
+RAM              0x0000000020000000 0x0000000000005000 xrw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD Output/main.o
+LOAD Output/startup.o
+LOAD Output/GPIO.o
+LOAD Output/RCC.o
+                0x0000000020005000                _estack = (ORIGIN (RAM) + LENGTH (RAM))
+
+.isr_vector     0x0000000008000000       0xe8
+                0x0000000008000000                . = ALIGN (0x4)
+ *(.isr_vector)
+ .isr_vector    0x0000000008000000       0xe8 Output/startup.o
+                0x0000000008000000                g_pfnVectors
+                0x00000000080000e8                . = ALIGN (0x4)
+
+.text           0x00000000080000e8      0x4c0
+                0x00000000080000e8                . = ALIGN (0x4)
+ *(.text)
+ .text          0x00000000080000e8       0xfc Output/main.o
+                0x00000000080000e8                mdelay
+                0x0000000008000124                main
+ .text          0x00000000080001e4       0x60 Output/startup.o
+                0x00000000080001e4                Default_Handler
+                0x00000000080001ea                Reset_Handler
+ .text          0x0000000008000244      0x198 Output/GPIO.o
+                0x0000000008000244                GPIO_Config
+                0x0000000008000386                GPIO_Write_Pin
+                0x00000000080003b4                GPIO_Read_Pin
+ .text          0x00000000080003dc      0x1cc Output/RCC.o
+                0x00000000080003dc                RCC_Config_72Mhz
+                0x0000000008000490                RCC_Enable_PortA
+                0x00000000080004ac                RCC_Enable_PortB
+                0x00000000080004c8                RCC_Enable_PortC
+                0x00000000080004e4                RCC_Enable_AFIO
+                0x0000000008000500                RCC_Enable_TIM2
+                0x000000000800051c                RCC_Enable_ADC01
+                0x0000000008000538                RCC_Enable_UART1
+                0x0000000008000554                RCC_Enable_SPI1
+                0x0000000008000570                RCC_Enable_I2C1
+                0x000000000800058c                RCC_Enable_USB
+ *(.text.*)
+ *(.rodata)
+ *(.rodata.*)
+                0x00000000080005a8                . = ALIGN (0x4)
+                0x00000000080005a8                _etext = .
+
+.glue_7         0x00000000080005a8        0x0
+ .glue_7        0x00000000080005a8        0x0 linker stubs
+
+.glue_7t        0x00000000080005a8        0x0
+ .glue_7t       0x00000000080005a8        0x0 linker stubs
+
+.vfp11_veneer   0x00000000080005a8        0x0
+ .vfp11_veneer  0x00000000080005a8        0x0 linker stubs
+
+.v4_bx          0x00000000080005a8        0x0
+ .v4_bx         0x00000000080005a8        0x0 linker stubs
+
+.iplt           0x00000000080005a8        0x0
+ .iplt          0x00000000080005a8        0x0 Output/main.o
+
+.rel.dyn        0x00000000080005a8        0x0
+ .rel.iplt      0x00000000080005a8        0x0 Output/main.o
+
+.data           0x0000000020000000       0x10 load address 0x00000000080005a8
+                0x0000000020000000                . = ALIGN (0x4)
+                0x0000000020000000                _sdata = .
+ *(.data)
+ .data          0x0000000020000000       0x10 Output/main.o
+                0x0000000020000000                led_pin
+ .data          0x0000000020000010        0x0 Output/startup.o
+ .data          0x0000000020000010        0x0 Output/GPIO.o
+ .data          0x0000000020000010        0x0 Output/RCC.o
+ *(.data.*)
+                0x0000000020000010                . = ALIGN (0x4)
+                0x0000000020000010                _edata = .
+                0x00000000080005a8                _sidata = LOADADDR (.data)
+
+.igot.plt       0x0000000020000010        0x0 load address 0x00000000080005b8
+ .igot.plt      0x0000000020000010        0x0 Output/main.o
+
+.bss            0x0000000020000010        0x0 load address 0x00000000080005b8
+                0x0000000020000010                . = ALIGN (0x4)
+                0x0000000020000010                _sbss = .
+ *(.bss)
+ .bss           0x0000000020000010        0x0 Output/main.o
+ .bss           0x0000000020000010        0x0 Output/startup.o
+ .bss           0x0000000020000010        0x0 Output/GPIO.o
+ .bss           0x0000000020000010        0x0 Output/RCC.o
+ *(.bss.*)
+ *(COMMON)
+                0x0000000020000010                . = ALIGN (0x4)
+                0x0000000020000010                _ebss = .
+
+/DISCARD/
+ *(.comment)
+ *(.note*)
+OUTPUT(Output/main.elf elf32-littlearm)
+LOAD linker stubs
+
+.ARM.attributes
+                0x0000000000000000       0x2d
+ .ARM.attributes
+                0x0000000000000000       0x2d Output/main.o
+ .ARM.attributes
+                0x000000000000002d       0x2d Output/startup.o
+ .ARM.attributes
+                0x000000000000005a       0x2d Output/GPIO.o
+ .ARM.attributes
+                0x0000000000000087       0x2d Output/RCC.o
