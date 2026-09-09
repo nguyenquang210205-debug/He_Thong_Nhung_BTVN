@@ -28,56 +28,56 @@ LOAD Output/RCC.o
                 0x0000000008000000                g_pfnVectors
                 0x00000000080000e8                . = ALIGN (0x4)
 
-.text           0x00000000080000e8      0x444
+.text           0x00000000080000e8      0x52c
                 0x00000000080000e8                . = ALIGN (0x4)
  *(.text)
- .text          0x00000000080000e8       0x80 Output/main.o
+ .text          0x00000000080000e8      0x168 Output/main.o
                 0x00000000080000e8                mdelay
                 0x0000000008000124                main
- .text          0x0000000008000168       0x60 Output/startup.o
-                0x0000000008000168                Default_Handler
-                0x000000000800016e                Reset_Handler
- .text          0x00000000080001c8      0x198 Output/GPIO.o
-                0x00000000080001c8                GPIO_Config
-                0x000000000800030a                GPIO_Write_Pin
-                0x0000000008000338                GPIO_Read_Pin
- .text          0x0000000008000360      0x1cc Output/RCC.o
-                0x0000000008000360                RCC_Config_72Mhz
-                0x0000000008000414                RCC_Enable_PortA
-                0x0000000008000430                RCC_Enable_PortB
-                0x000000000800044c                RCC_Enable_PortC
-                0x0000000008000468                RCC_Enable_AFIO
-                0x0000000008000484                RCC_Enable_TIM2
-                0x00000000080004a0                RCC_Enable_ADC01
-                0x00000000080004bc                RCC_Enable_UART1
-                0x00000000080004d8                RCC_Enable_SPI1
-                0x00000000080004f4                RCC_Enable_I2C1
-                0x0000000008000510                RCC_Enable_USB
+ .text          0x0000000008000250       0x60 Output/startup.o
+                0x0000000008000250                Default_Handler
+                0x0000000008000256                Reset_Handler
+ .text          0x00000000080002b0      0x198 Output/GPIO.o
+                0x00000000080002b0                GPIO_Config
+                0x00000000080003f2                GPIO_Write_Pin
+                0x0000000008000420                GPIO_Read_Pin
+ .text          0x0000000008000448      0x1cc Output/RCC.o
+                0x0000000008000448                RCC_Config_72Mhz
+                0x00000000080004fc                RCC_Enable_PortA
+                0x0000000008000518                RCC_Enable_PortB
+                0x0000000008000534                RCC_Enable_PortC
+                0x0000000008000550                RCC_Enable_AFIO
+                0x000000000800056c                RCC_Enable_TIM2
+                0x0000000008000588                RCC_Enable_ADC01
+                0x00000000080005a4                RCC_Enable_UART1
+                0x00000000080005c0                RCC_Enable_SPI1
+                0x00000000080005dc                RCC_Enable_I2C1
+                0x00000000080005f8                RCC_Enable_USB
  *(.text.*)
  *(.rodata)
  *(.rodata.*)
-                0x000000000800052c                . = ALIGN (0x4)
-                0x000000000800052c                _etext = .
+                0x0000000008000614                . = ALIGN (0x4)
+                0x0000000008000614                _etext = .
 
-.glue_7         0x000000000800052c        0x0
- .glue_7        0x000000000800052c        0x0 linker stubs
+.glue_7         0x0000000008000614        0x0
+ .glue_7        0x0000000008000614        0x0 linker stubs
 
-.glue_7t        0x000000000800052c        0x0
- .glue_7t       0x000000000800052c        0x0 linker stubs
+.glue_7t        0x0000000008000614        0x0
+ .glue_7t       0x0000000008000614        0x0 linker stubs
 
-.vfp11_veneer   0x000000000800052c        0x0
- .vfp11_veneer  0x000000000800052c        0x0 linker stubs
+.vfp11_veneer   0x0000000008000614        0x0
+ .vfp11_veneer  0x0000000008000614        0x0 linker stubs
 
-.v4_bx          0x000000000800052c        0x0
- .v4_bx         0x000000000800052c        0x0 linker stubs
+.v4_bx          0x0000000008000614        0x0
+ .v4_bx         0x0000000008000614        0x0 linker stubs
 
-.iplt           0x000000000800052c        0x0
- .iplt          0x000000000800052c        0x0 Output/main.o
+.iplt           0x0000000008000614        0x0
+ .iplt          0x0000000008000614        0x0 Output/main.o
 
-.rel.dyn        0x000000000800052c        0x0
- .rel.iplt      0x000000000800052c        0x0 Output/main.o
+.rel.dyn        0x0000000008000614        0x0
+ .rel.iplt      0x0000000008000614        0x0 Output/main.o
 
-.data           0x0000000020000000        0x0 load address 0x000000000800052c
+.data           0x0000000020000000        0x0 load address 0x0000000008000614
                 0x0000000020000000                . = ALIGN (0x4)
                 0x0000000020000000                _sdata = .
  *(.data)
@@ -88,12 +88,12 @@ LOAD Output/RCC.o
  *(.data.*)
                 0x0000000020000000                . = ALIGN (0x4)
                 0x0000000020000000                _edata = .
-                0x000000000800052c                _sidata = LOADADDR (.data)
+                0x0000000008000614                _sidata = LOADADDR (.data)
 
-.igot.plt       0x0000000020000000        0x0 load address 0x000000000800052c
+.igot.plt       0x0000000020000000        0x0 load address 0x0000000008000614
  .igot.plt      0x0000000020000000        0x0 Output/main.o
 
-.bss            0x0000000020000000        0x0 load address 0x000000000800052c
+.bss            0x0000000020000000        0x0 load address 0x0000000008000614
                 0x0000000020000000                . = ALIGN (0x4)
                 0x0000000020000000                _sbss = .
  *(.bss)
