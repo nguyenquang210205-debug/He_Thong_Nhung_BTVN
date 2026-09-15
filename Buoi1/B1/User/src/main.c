@@ -13,14 +13,14 @@ void mdelay(volatile uint32_t s)
 int main(void)
 {
     RCC_Enable_PortC();
-    GPIO_Config(GPIOC, GPIO_PIN_13, GPIO_MODE_OUTPUT_PP);
+    GPIO_Config(GPIOA, GPIO_PIN_2, GPIO_MODE_OUTPUT_PP);
 
     while (1)
     {
-        GPIO_Write_Pin(GPIOC, GPIO_PIN_13, 1);
+        GPIO_Write_Pin(GPIOA, GPIO_PIN_2, 1);
         mdelay(2000);
 
-        GPIO_Write_Pin(GPIOC, GPIO_PIN_13, 0);
+        GPIO_Write_Pin(GPIOA, GPIO_PIN_2, 0);
         mdelay(2000);
     }
 }
