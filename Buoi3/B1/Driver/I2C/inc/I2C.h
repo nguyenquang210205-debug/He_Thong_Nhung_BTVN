@@ -1,36 +1,51 @@
-#ifndef I2C_H
-#define I2C_H
+#ifndef __I2C_H
+#define __I2C_H
 
 #include <stdint.h>
 
-#define I2C1_BASE       0x40005400U
+#define I2C1_BASE        0x40005400UL
 
-#define I2C1_CR1        (*(volatile uint32_t *)(I2C1_BASE + 0x00U))
-#define I2C1_CR2        (*(volatile uint32_t *)(I2C1_BASE + 0x04U))
-#define I2C1_OAR1       (*(volatile uint32_t *)(I2C1_BASE + 0x08U))
-#define I2C1_OAR2       (*(volatile uint32_t *)(I2C1_BASE + 0x0CU))
-#define I2C1_DR         (*(volatile uint32_t *)(I2C1_BASE + 0x10U))
-#define I2C1_SR1        (*(volatile uint32_t *)(I2C1_BASE + 0x14U))
-#define I2C1_SR2        (*(volatile uint32_t *)(I2C1_BASE + 0x18U))
-#define I2C1_CCR        (*(volatile uint32_t *)(I2C1_BASE + 0x1CU))
-#define I2C1_TRISE      (*(volatile uint32_t *)(I2C1_BASE + 0x20U))
+#define I2C1_CR1         (*(volatile uint32_t *)(I2C1_BASE + 0x00UL))
+#define I2C1_CR2         (*(volatile uint32_t *)(I2C1_BASE + 0x04UL))
+#define I2C1_OAR1        (*(volatile uint32_t *)(I2C1_BASE + 0x08UL))
+#define I2C1_OAR2        (*(volatile uint32_t *)(I2C1_BASE + 0x0CUL))
+#define I2C1_DR          (*(volatile uint32_t *)(I2C1_BASE + 0x10UL))
+#define I2C1_SR1         (*(volatile uint32_t *)(I2C1_BASE + 0x14UL))
+#define I2C1_SR2         (*(volatile uint32_t *)(I2C1_BASE + 0x18UL))
+#define I2C1_CCR         (*(volatile uint32_t *)(I2C1_BASE + 0x1CUL))
+#define I2C1_TRISE       (*(volatile uint32_t *)(I2C1_BASE + 0x20UL))
 
-#define RCC_BASE        0x40021000U
-#define RCC_APB1ENR     (*(volatile uint32_t *)(RCC_BASE + 0x1CU))
-#define RCC_APB2ENR     (*(volatile uint32_t *)(RCC_BASE + 0x18U))
+#define I2C_CR1_PE       (1U << 0)
+#define I2C_CR1_START    (1U << 8)
+#define I2C_CR1_STOP     (1U << 9)
+#define I2C_CR1_ACK      (1U << 10)
+#define I2C_CR1_SWRST    (1U << 15)
 
-#define GPIOB_BASE      0x40010C00U
-#define GPIOB_CRL       (*(volatile uint32_t *)(GPIOB_BASE + 0x00U))
+#define I2C_SR1_SB       (1U << 0)
+#define I2C_SR1_ADDR     (1U << 1)
+#define I2C_SR1_BTF      (1U << 2)
+#define I2C_SR1_RXNE     (1U << 6)
+#define I2C_SR1_TXE      (1U << 7)
+#define I2C_SR1_AF       (1U << 10)
 
-void I2C_Init(void);
-void I2C_Start(void);
-void I2C_Stop(void);
-void I2C_SendAddr(uint8_t addr, uint8_t is_read);
-void I2C_WriteData(uint8_t data);
-uint8_t I2C_ReadData_Ack(void);
-uint8_t I2C_ReadData_Nack(void);
+#define I2C_SR2_BUSY     (1U << 1)
 
-void I2C_Write(uint8_t dev_addr, uint8_t *pData, uint16_t size);
-void I2C_Read(uint8_t dev_addr, uint8_t *pData, uint16_t size);
+uint8_t I2C1_Init(void);
+
+uint8_t I2C1_Start(void);
+
+void I2C1_Stop(void);
+
+uint8_t I2C1_SendAddress(
+    uint8_t address
+);
+
+uint8_t I2C1_WriteByte(
+    uint8_t data
+);
+
+uint8_t I2C1_ReadByte(
+    uint8_t ack
+);
 
 #endif

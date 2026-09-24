@@ -1,105 +1,221 @@
 #include "I2C.h"
+#include "RCC.h"
+#include "GPIO.h"
 
-void I2C_Init(void)
+uint8_t I2C1_Init(void)
 {
-    RCC_APB2ENR |= (1U << 3);
-    
-    GPIOB_CRL &= ~((0xFU << 24) | (0xFU << 28));
-    GPIOB_CRL |=  ((0xFU << 24) | (0xFU << 28));
+    RCC_Enable_I2C1();
+    RCC_Enable_PortB();
 
-    RCC_APB1ENR |= (1U << 21);
+    GPIO_Config(
+        GPIO_PORT_B,
+        GPIO_PIN_6,
+        GPIO_MODE_AF_OD
+    );
 
-    I2C1_CR1 &= ~(1U << 0);
+    GPIO_Config(
+        GPIO_PORT_B,
+        GPIO_PIN_7,
+        GPIO_MODE_AF_OD
+    );
 
-    I2C1_CR2 &= ~0x3FU;
-    I2C1_CR2 |= 36U;
+    I2C1_CR1 =
+        I2C_CR1_SWRST;
 
-    I2C1_CCR = 180U;
-    I2C1_TRISE = 37U;
+    I2C1_CR1 = 0;
 
-    I2C1_CR1 |= (1U << 0);
+    I2C1_CR2 = 36;
+
+    I2C1_OAR1 =
+        (1U << 14);
+
+    I2C1_OAR2 = 0;
+
+    I2C1_CCR = 180;
+
+    I2C1_TRISE = 37;
+
+    I2C1_CR1 =
+        I2C_CR1_PE |
+        I2C_CR1_ACK;
+
+    return 1;
 }
 
-void I2C_Start(void)
+uint8_t I2C1_Start(void)
 {
-    I2C1_CR1 |= (1U << 8);
-    while (!(I2C1_SR1 & (1U << 0)));
-}
+    uint32_t timeout = 1000000UL;
 
-void I2C_Stop(void)
-{
-    I2C1_CR1 |= (1U << 9);
-}
-
-void I2C_SendAddr(uint8_t addr, uint8_t is_read)
-{
-    uint32_t temp;
-    if (is_read)
+    while (
+        (I2C1_SR2 & I2C_SR2_BUSY) &&
+        timeout
+    )
     {
-        I2C1_DR = addr | 0x01U;
+        timeout--;
+    }
+
+    if (timeout == 0)
+    {
+        return 0;
+    }
+
+    I2C1_CR1 |=
+        I2C_CR1_START;
+
+    timeout = 1000000UL;
+
+    while (
+        !(I2C1_SR1 & I2C_SR1_SB) &&
+        timeout
+    )
+    {
+        timeout--;
+    }
+
+    if (timeout == 0)
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
+void I2C1_Stop(void)
+{
+    I2C1_CR1 |=
+        I2C_CR1_STOP;
+}
+
+uint8_t I2C1_SendAddress(
+    uint8_t address
+)
+{
+    uint32_t timeout = 1000000UL;
+
+    I2C1_DR = address;
+
+    while (
+        !(I2C1_SR1 & I2C_SR1_ADDR) &&
+        timeout
+    )
+    {
+        if (I2C1_SR1 & I2C_SR1_AF)
+        {
+            I2C1_SR1 &=
+                ~I2C_SR1_AF;
+
+            return 0;
+        }
+
+        timeout--;
+    }
+
+    if (timeout == 0)
+    {
+        return 0;
+    }
+
+    (void)I2C1_SR1;
+    (void)I2C1_SR2;
+
+    return 1;
+}
+
+uint8_t I2C1_WriteByte(
+    uint8_t data
+)
+{
+    uint32_t timeout;
+
+    I2C1_DR = data;
+
+    timeout = 1000000UL;
+
+    while (
+        !(I2C1_SR1 & I2C_SR1_TXE) &&
+        timeout
+    )
+    {
+        if (I2C1_SR1 & I2C_SR1_AF)
+        {
+            I2C1_SR1 &=
+                ~I2C_SR1_AF;
+
+            return 0;
+        }
+
+        timeout--;
+    }
+
+    if (timeout == 0)
+    {
+        return 0;
+    }
+
+    timeout = 1000000UL;
+
+    while (
+        !(I2C1_SR1 & I2C_SR1_BTF) &&
+        timeout
+    )
+    {
+        if (I2C1_SR1 & I2C_SR1_AF)
+        {
+            I2C1_SR1 &=
+                ~I2C_SR1_AF;
+
+            return 0;
+        }
+
+        timeout--;
+    }
+
+    if (timeout == 0)
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
+uint8_t I2C1_ReadByte(
+    uint8_t ack
+)
+{
+    uint32_t timeout =
+        1000000UL;
+
+    uint8_t data;
+
+    if (ack)
+    {
+        I2C1_CR1 |=
+            I2C_CR1_ACK;
     }
     else
     {
-        I2C1_DR = addr & ~0x01U;
+        I2C1_CR1 &=
+            ~I2C_CR1_ACK;
     }
-    while (!(I2C1_SR1 & (1U << 1)));
-    temp = I2C1_SR1;
-    temp = I2C1_SR2;
-    (void)temp;
-}
 
-void I2C_WriteData(uint8_t data)
-{
-    while (!(I2C1_SR1 & (1U << 7)));
-    I2C1_DR = data;
-    while (!(I2C1_SR1 & (1U << 2)));
-}
-
-uint8_t I2C_ReadData_Ack(void)
-{
-    uint8_t data;
-    I2C1_CR1 |= (1U << 10);
-    while (!(I2C1_SR1 & (1U << 6)));
-    data = (uint8_t)I2C1_DR;
-    return data;
-}
-
-uint8_t I2C_ReadData_Nack(void)
-{
-    uint8_t data;
-    I2C1_CR1 &= ~(1U << 10);
-    while (!(I2C1_SR1 & (1U << 6)));
-    data = (uint8_t)I2C1_DR;
-    return data;
-}
-
-void I2C_Write(uint8_t dev_addr, uint8_t *pData, uint16_t size)
-{
-    uint16_t i;
-    I2C_Start();
-    I2C_SendAddr(dev_addr, 0);
-    for (i = 0; i < size; i++)
+    while (
+        !(I2C1_SR1 & I2C_SR1_RXNE) &&
+        timeout
+    )
     {
-        I2C_WriteData(pData[i]);
+        timeout--;
     }
-    I2C_Stop();
-}
 
-void I2C_Read(uint8_t dev_addr, uint8_t *pData, uint16_t size)
-{
-    uint16_t i;
-    I2C_Start();
-    I2C_SendAddr(dev_addr, 1);
-    for (i = 0; i < size; i++)
+    if (timeout == 0)
     {
-        if (i == size - 1)
-        {
-            pData[i] = I2C_ReadData_Nack();
-        }
-        else
-        {
-            pData[i] = I2C_ReadData_Ack();
-        }
+        I2C1_CR1 |=
+            I2C_CR1_ACK;
+
+        return 0;
     }
-    I2C_Stop();
+
+    data =
+        (uint8_t)I2C1_DR;
+
+    return data;
 }

@@ -1,3 +1,4 @@
+
 TARGET = main
 
 CC      = arm-none-eabi-gcc
@@ -9,35 +10,33 @@ STFLASH = st-flash
 GDB     = gdb-multiarch
 
 SRC_DIRS = User/src \
-           Startup \
-           Driver/GPIO/src \
-           Driver/RCC/src \
-           Driver/EXTI/src \
-           Driver/UART/src \
-           Driver/SYSTICK/src \
-           Driver/AFIO/src \
-           Driver/DMA/src \
-           Driver/ADC/src \
-           Driver/NVIC/src \
-           Driver/TIM/src \
-           Driver/I2C/src
+		  Startup \
+		  Driver/GPIO/src \
+		  Driver/RCC/src \
+#		  Driver/EXTI/src \
+		  Driver/UART/src \
+		  Driver/SYSTICK/src\
+		  Driver/AFIO/src\
+		  Driver/DMA/src\
+		  Driver/I2C/src\
+		  Module/DS1307/src
+
+		  
 
 SRC_FILES +=$(foreach SRC_DIRS,$(SRC_DIRS),$(wildcard $(SRC_DIRS)/*))
 
 INC_DIRS = User/inc \
-           Startup \
-           Driver/GPIO/inc \
-           Driver/RCC/inc \
-           Driver/EXTI/inc \
-           Driver/UART/inc \
-           Driver/TYPE \
-           Driver/AFIO/inc \
-           Driver/SYSTICK/inc \
-           Driver/DMA/inc \
-           Driver/ADC/inc \
-           Driver/NVIC/inc \
-           Driver/TIM/inc \
-           Driver/I2C/inc
+			  Startup \
+			  Driver/GPIO/inc \
+			  Driver/RCC/inc \
+#			  Driver/EXTI/inc \
+			  Driver/UART/inc \
+			  Driver/TYPE \
+			  Driver/AFIO/inc\
+			  Driver/SYSTICK/inc\
+			  Driver/DMA/inc\
+			  Driver/I2C/inc\
+		  	  Module/DS1307/inc
 
 INC_FILES +=$(foreach INC_DIRS,$(INC_DIRS),$(wildcard $(INC_DIRS)/*))
 INC_DIR_OPT = $(foreach INC_DIRS,$(INC_DIRS),-I$(INC_DIRS))
@@ -64,11 +63,9 @@ build: $(PATH_OUTPUT)/$(TARGET).bin
 
 $(PATH_OUTPUT)/%.o: %.c
 	$(CC) $(CCFLAGS) -c $< -o $@
-
 $(PATH_OUTPUT)/$(TARGET).elf: $(PATH_OBJ)
 	$(CC) $(LDFLAGS) -o $@ $^
-
-$(PATH_OUTPUT)/$(TARGET).bin: $(PATH_OUTPUT)/$(TARGET).elf
+$(PATH_OUTPUT)/$(TARGET).bin:$(PATH_OUTPUT)/$(TARGET).elf
 	$(OBJCOPY) -O binary "$^" "$@"
 
 flash: Output/$(TARGET).bin
@@ -79,6 +76,5 @@ erase:
 
 clean:
 	rm -f Output/*
-
 print-%:
 	@echo $($(subst print-,,$@))

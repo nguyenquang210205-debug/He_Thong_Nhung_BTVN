@@ -3,48 +3,31 @@
 
 #include <stdint.h>
 
-#define RCC_BASE 0x40021000UL
+#define RCC_BASE        0x40021000UL
 
-#define RCC_CR       (*(volatile uint32_t *)(RCC_BASE + 0x00UL))
-#define RCC_CFGR     (*(volatile uint32_t *)(RCC_BASE + 0x04UL))
-#define RCC_CIR      (*(volatile uint32_t *)(RCC_BASE + 0x08UL))
-#define RCC_APB2RSTR (*(volatile uint32_t *)(RCC_BASE + 0x0CUL))
-#define RCC_APB1RSTR (*(volatile uint32_t *)(RCC_BASE + 0x10UL))
-#define RCC_AHBENR   (*(volatile uint32_t *)(RCC_BASE + 0x14UL))
-#define RCC_APB2ENR  (*(volatile uint32_t *)(RCC_BASE + 0x18UL))
-#define RCC_APB1ENR  (*(volatile uint32_t *)(RCC_BASE + 0x1CUL))
-#define RCC_BDCR     (*(volatile uint32_t *)(RCC_BASE + 0x20UL))
-#define RCC_CSR      (*(volatile uint32_t *)(RCC_BASE + 0x24UL))
+#define RCC_CR          (*(volatile uint32_t *)(RCC_BASE + 0x00UL))
+#define RCC_CFGR        (*(volatile uint32_t *)(RCC_BASE + 0x04UL))
+#define RCC_APB2ENR     (*(volatile uint32_t *)(RCC_BASE + 0x18UL))
+#define RCC_APB1ENR     (*(volatile uint32_t *)(RCC_BASE + 0x1CUL))
 
-#define FLASH_ACR (*(volatile uint32_t *)0x40022000UL)
+#define RCC_CR_HSEON    (1U << 16)
+#define RCC_CR_HSERDY   (1U << 17)
+#define RCC_CR_PLLON    (1U << 24)
+#define RCC_CR_PLLRDY   (1U << 25)
+
+#define RCC_APB2_IOPAEN     (1U << 2)
+#define RCC_APB2_IOPBEN     (1U << 3)
+#define RCC_APB2_AFIOEN     (1U << 0)
+#define RCC_APB2_USART1EN   (1U << 14)
+
+#define RCC_APB1_I2C1EN    (1U << 21)
 
 void RCC_Config_72Mhz(void);
 
-void RCC_Enable_DMA1(void);
-
-void RCC_Enable_AFIO(void);
-
 void RCC_Enable_PortA(void);
 void RCC_Enable_PortB(void);
-void RCC_Enable_PortC(void);
-
-void RCC_Enable_ADC1(void);
-void RCC_Enable_ADC2(void);
-
-void RCC_Enable_TIM2(void);
-void RCC_Enable_TIM3(void);
-void RCC_Enable_TIM4(void);
-
+void RCC_Enable_AFIO(void);
 void RCC_Enable_UART1(void);
-void RCC_Enable_UART2(void);
-void RCC_Enable_UART3(void);
-
-void RCC_Enable_SPI1(void);
-void RCC_Enable_SPI2(void);
-
 void RCC_Enable_I2C1(void);
-void RCC_Enable_I2C2(void);
-
-void RCC_Enable_USB(void);
 
 #endif
