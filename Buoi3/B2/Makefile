@@ -18,9 +18,12 @@ SRC_DIRS = User/src \
 		  Driver/SYSTICK/src\
 		  Driver/AFIO/src\
 		  Driver/DMA/src\
-		  Driver/ADC/src\
-		  Driver/NVIC/src\
-		  Driver/TIM/src
+		  Driver/I2C/src\
+		  Driver/SPI/src\
+		  Module/DS1307/src\
+		  Module/FAT32/src\
+		  Module/SD/src
+
 		  
 
 SRC_FILES +=$(foreach SRC_DIRS,$(SRC_DIRS),$(wildcard $(SRC_DIRS)/*))
@@ -35,9 +38,11 @@ INC_DIRS = User/inc \
 			  Driver/AFIO/inc\
 			  Driver/SYSTICK/inc\
 			  Driver/DMA/inc\
-			  Driver/ADC/inc\
-		  	  Driver/NVIC/inc\
-		 	  Driver/TIM/inc
+			  Driver/I2C/inc\
+		  	  Driver/SPI/inc\
+		  	  Module/DS1307/inc\
+		      Module/FAT32/inc\
+		      Module/SD/inc
 
 INC_FILES +=$(foreach INC_DIRS,$(INC_DIRS),$(wildcard $(INC_DIRS)/*))
 INC_DIR_OPT = $(foreach INC_DIRS,$(INC_DIRS),-I$(INC_DIRS))

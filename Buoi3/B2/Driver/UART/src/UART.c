@@ -4,8 +4,6 @@
 
 void UART1_Init(uint32_t baudrate)
 {
-    uint32_t usartdiv;
-
     RCC_Enable_UART1();
     RCC_Enable_PortA();
 
@@ -25,11 +23,8 @@ void UART1_Init(uint32_t baudrate)
     USART1_CR2 = 0;
     USART1_CR3 = 0;
 
-    usartdiv =
-        (72000000UL + (baudrate / 2UL))
-        / baudrate;
-
-    USART1_BRR = usartdiv;
+    USART1_BRR =
+        (72000000UL + baudrate / 2U) / baudrate;
 
     USART1_CR1 |= USART_CR1_UE;
     USART1_CR1 |= USART_CR1_TE;
@@ -48,7 +43,7 @@ void UART1_DMA_Disable(void)
 
 void UART1_SendChar(char c)
 {
-    while (!(USART1_SR & USART_SR_TXE))
+    while (!(USART1_SR & (1U << 7)))
     {
     }
 
@@ -59,47 +54,47 @@ void UART1_SendString(const char *str)
 {
     while (*str)
     {
-        UART1_SendChar(*str);
-        str++;
+        UART1_SendChar(*str++);
     }
-}
-
-void UART1_SendNumber(uint16_t value)
-{
-    char buffer[5];
-    uint8_t index = 0;
-    uint8_t i;
-
-    if (value == 0)
-    {
-        UART1_SendChar('0');
-        UART1_SendChar('\n');
-        UART1_SendChar('\r');
-        return;
-    }
-
-    while (value > 0)
-    {
-        buffer[index++] =
-            (char)('0' + (value % 10U));
-
-        value /= 10U;
-    }
-
-    for (i = index; i > 0; i--)
-    {
-        UART1_SendChar(buffer[i - 1]);
-    }
-
-    UART1_SendChar('\n');
-    UART1_SendChar('\r');
 }
 
 char UART1_ReadChar(void)
 {
-    while (!(USART1_SR & USART_SR_RXNE))
+    while (!(USART1_SR & (1U << 5)))
     {
     }
 
     return (char)(USART1_DR & 0xFFU);
+}
+
+uint8_t UART1_Available(void)
+{
+    return (USART1_SR & (1U << 5)) ? 1U : 0U;
+}
+
+void UART1_SendNumber(uint32_t number)
+{
+    char buffer[11];
+    uint8_t index = 0;
+
+    if (number == 0)
+    {
+        UART1_SendChar('0');
+        return;
+    }
+
+    while (number > 0)
+    {
+        buffer[index++] =
+            (char)('0' + (number % 10));
+
+        number /= 10;
+    }
+
+    while (index > 0)
+    {
+        UART1_SendChar(
+            buffer[--index]
+        );
+    }
 }
